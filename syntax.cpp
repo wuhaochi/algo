@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-
 using namespace std;
 
 class A{
@@ -24,7 +23,7 @@ public:
     }
 };
 
-class B1 : public  A
+class B1 : public  virtual A // virtual inheritance
 {
 public:
     B1()
@@ -43,7 +42,7 @@ public:
     
 };
 
-class B2 : public  virtual A
+class B2 : public  virtual A // virtual inheritance
 {
 public:
     
@@ -64,7 +63,7 @@ public:
 };
 
 
-class C : public B2, public B1
+class C : public B2, public B1 // thanks to both are virtual inheritance to Base class A
 {
 public:
     C()
