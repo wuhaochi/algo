@@ -5,9 +5,36 @@
 
 using namespace std;
 
-    // member function pointer
 
-class C
+class A{
+public:
+    virtual void f()
+    {
+        cout << "A::f()" << endl;
+    }
+    
+};
+
+
+class B1 : public virtual A{
+public:
+    void f()
+    {
+        cout << "B1::f()" << endl;
+    }
+};
+
+
+class B2 : public virtual A{
+public:
+    void f()
+    {
+        cout << "B2::f()" << endl;
+    }
+};
+
+
+class C: public B1, public B2
 {
 public:
     C()
@@ -26,25 +53,44 @@ public:
     }
 };
 
-int n = 0;
+
 int main()
 {
-    typedef void (C::*C_mem)();
-    
     C c;
-    C_mem pmem = &C::f;
     
-    ((&c)->*pmem)();
+        // upcast
+    A* pa = dynamic_cast<A*>(&c); // compile error if A is not virtual inheritance
+    B1* pb1 = dynamic_cast<B1*>(pa);
+    pb1->f();
+    B2* pb2 = dynamic_cast<B2*>(pa);
+    pb2->f();
+    C* pc = dynamic_cast<C*>(pa);
+    pc->f();
     
-    (c.*pmem)();
+    A a;
+        // downcast
+    pa  = &a;
     
-	n ++;
-    if( n < 3)
-    {
-    	typedef int (*pfunc)();
-        pfunc ptr = main;
-        cout << "run main: " << n << endl;
-        ptr();
+    pb1 = dynamic_cast<B1*>(pa);
+    if(pb1) {
+    pb1->f();
     }
+    else{
+        cout << "pb1 is null" << endl;
+    }
+    
+    try{
+        B1& rb1 = dynamic_cast<B1&>(a);
+    }
+    catch(const bad_cast& e)
+    {
+        cout << e.what() << endl;
+    }
+    
+        // cross cast
+    pa = &c;
+    pb2 = dynamic_cast<B2*>(pa);
+    pb1 = dynamic_cast<B1*>(pb2);
+    pb1->f();
     return 0;
 }
